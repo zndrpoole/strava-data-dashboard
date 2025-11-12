@@ -1,0 +1,23 @@
+{
+  "name": "strava-dashboard",
+  "version": "1.0.0",
+  "description": "A full-stack Strava dashboard application",
+  "scripts": {
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:dev": "cd frontend && npm start",
+    "build": "npm run backend:build && npm run frontend:build",
+    "backend:build": "cd backend && npm run build",
+    "frontend:build": "cd frontend && npm run build",
+    "start": "npm run backend:start",
+    "backend:start": "cd backend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "test": "cd frontend && npm test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["strava", "dashboard", "fitness", "analytics"],
+  "author": "",
+  "license": "ISC"
+}
