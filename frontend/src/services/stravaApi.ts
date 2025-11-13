@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Athlete } from '../types/strava';
+import { Athlete }  from '../types/strava';
+import { Activity } from '../types/strava';
 
 const API_BASE_URL = 'http://localhost:5001/api';
 
@@ -12,5 +13,11 @@ export const stravaApi = {
   getAthleteProfile: async (accessToken: string): Promise<Athlete> => {
     const response = await axios.get(`${API_BASE_URL}/auth/athlete?access_token=${accessToken}`);
     return response.data;
+  },
+
+  getRecentActivity: async (accessToken: string): Promise<Activity> => {
+  const response = await axios.get(`${API_BASE_URL}/auth/most-recent-activity?access_token=${accessToken}`);
+  return response.data;
   }
+
 };

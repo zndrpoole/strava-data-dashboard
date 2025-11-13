@@ -60,3 +60,29 @@ export const getAthleteProfile = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch athlete profile' });
   }
 };
+
+export const getMostRecentAthleteActivities = async (req: Request, res: Response) => {
+  const { access_token } = req.query;
+
+  if (!access_token) {
+    return res.status(400).json({ error: 'No access token provided' });
+  }
+
+  try {
+    const response = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      },
+      params: {
+        per_page: 1,
+        page: 1
+      }
+    });
+
+    return res.json(response.data[0]); // only get most recent activity
+
+  } catch (error: any) {
+    console.error('Error fetching athlete activities:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to fetch athlete activities' });
+  }
+};
