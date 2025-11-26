@@ -20,4 +20,9 @@ export interface Activity {
   start_date: string;
   average_speed: number;
   max_speed: number;
+  average_heartrate: number;
+}
+
+export interface Activities {
+  [key: string]: Activity[];
 }
