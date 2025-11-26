@@ -86,3 +86,53 @@ export const getMostRecentAthleteActivities = async (req: Request, res: Response
     res.status(500).json({ error: 'Failed to fetch athlete activities' });
   }
 };
+
+export const getMonthlyActivityBreakdown = async (req: Request, res: Response) => {
+  const { access_token } = req.query;
+
+  if (!access_token) {
+    return res.status(400).json({ error: 'No access token provided' });
+  }
+
+  try {
+    // Calculate start of current month
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const unixTimestamp = Math.floor(startOfMonth.getTime() / 1000);
+
+    const response = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      },
+      params: {
+        after: unixTimestamp,
+        per_page: 200 // Get more activities to capture the month
+      }
+    });
+
+    // Group activities by type and count them
+    const activityBreakdown: { [key: string]: number } = {};
+    
+    response.data.forEach((activity: any) => {
+      const activityType = activity.type || 'Unknown';
+      activityBreakdown[activityType] = (activityBreakdown[activityType] || 0) + 1;
+    });
+
+    // Convert to array format for pie chart
+    const breakdownArray = Object.entries(activityBreakdown).map(([type, count]) => ({
+      type,
+      count,
+      percentage: ((count / response.data.length) * 100).toFixed(1)
+    }));
+
+    res.json({
+      total_activities: response.data.length,
+      breakdown: breakdownArray,
+      period: 'current_month'
+    });
+
+  } catch (error: any) {
+    console.error('Error fetching monthly activity breakdown:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to fetch monthly activity breakdown' });
+  }
+};

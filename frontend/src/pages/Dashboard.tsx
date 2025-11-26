@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useStravaData } from '../hooks/useStravaData';
-import { Athlete } from '../types/strava';
 import Button from '../components/Button';
 import RecentActivityTile from '../components/tiles/RecentActivityTile';
 import WeeklyStatsTile from '../components/tiles/WeeklyStatsTile';
 import AllTimeStatsTile from '../components/tiles/AllTimeStatsTile';
 import GoalsTile from '../components/tiles/GoalsTile';
+import ActivityBreakdownTile from '../components/tiles/ActivityBreakdownTile';
 
 const Dashboard: React.FC = () => {
   const location = useLocation();
@@ -18,6 +18,9 @@ const Dashboard: React.FC = () => {
   const storedToken = localStorage.getItem('strava_access_token');
   const accessToken = urlToken || storedToken;
 
+  // Use custom hook for data fetching (called unconditionally to preserve hook order)
+  const { athlete, recentActivity, monthlyBreakdown, loading, error, refetchData } = useStravaData(accessToken);
+
   // Store token if it came from URL
   if (urlToken) {
     localStorage.setItem('strava_access_token', urlToken);
@@ -28,9 +31,6 @@ const Dashboard: React.FC = () => {
     navigate('/');
     return null;
   }
-
-  // Use custom hook for data fetching
-  const { athlete, recentActivity, loading, error, refetchData } = useStravaData(accessToken);
 
   if (loading) {
     return (
@@ -112,6 +112,12 @@ const Dashboard: React.FC = () => {
           />
           
           <GoalsTile 
+            loading={loading} 
+            error={error} 
+          />
+
+          <ActivityBreakdownTile 
+            data={monthlyBreakdown}
             loading={loading} 
             error={error} 
           />

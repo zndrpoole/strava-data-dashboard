@@ -16,8 +16,13 @@ export const stravaApi = {
   },
 
   getRecentActivity: async (accessToken: string): Promise<Activity> => {
-  const response = await axios.get(`${API_BASE_URL}/auth/most-recent-activity?access_token=${accessToken}`);
-  return response.data;
+    const response = await axios.get(`${API_BASE_URL}/auth/most-recent-activity?access_token=${accessToken}`);
+    return response.data;
+  },
+
+  getMonthlyBreakdown: async (accessToken: string) => {
+    const response = await axios.get(`${API_BASE_URL}/auth/monthly-breakdown?access_token=${accessToken}`);
+    return response.data;
   }
 
 };

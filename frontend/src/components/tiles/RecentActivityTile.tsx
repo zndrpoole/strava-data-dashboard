@@ -56,12 +56,14 @@ const RecentActivityTile: React.FC<RecentActivityTileProps> = ({
       <p className="text-gray-600 mb-2">{activity.type}</p>
       
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-        <div>
-          <p className="text-sm text-gray-500">Distance</p>
-          <p className="text-lg font-semibold">
-            {(activity.distance / 1000).toFixed(2)} km
-          </p>
-        </div>
+        {activity.distance > 0 && (
+          <div>
+            <p className="text-sm text-gray-500">Distance</p>
+            <p className="text-lg font-semibold">
+              {(activity.distance / 1000).toFixed(2)} km
+            </p>
+          </div>
+        )}
         
         <div>
           <p className="text-sm text-gray-500">Time</p>
@@ -70,14 +72,21 @@ const RecentActivityTile: React.FC<RecentActivityTileProps> = ({
           </p>
         </div>
         
-        {activity.average_speed && (
+        {/* {activity.average_speed && (
           <div>
             <p className="text-sm text-gray-500">Avg Speed</p>
             <p className="text-lg font-semibold">
               {(activity.average_speed * 3.6).toFixed(1)} km/h
             </p>
           </div>
-        )}
+        )} */}
+
+        <div>
+          <p className="text-sm text-gray-500">Avg HR</p>
+          <p className="text-lg font-semibold">
+            {activity.average_heartrate ? activity.average_heartrate.toFixed(0) + ' bpm' : 'N/A'}
+          </p>
+        </div>
       </div>
     </TileContainer>
   );
