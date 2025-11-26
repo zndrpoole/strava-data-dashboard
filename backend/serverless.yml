@@ -1,0 +1,43 @@
+service: strava-dashboard-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    CLIENT_ID: ${env:CLIENT_ID}
+    CLIENT_SECRET: ${env:CLIENT_SECRET}
+    REDIRECT_URI: ${env:REDIRECT_URI}
+    FRONTEND_URL: ${env:FRONTEND_URL}
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:3000
+        - https://*.amplifyapp.com
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowedMethods:
+        - GET
+        - POST
+        - OPTIONS
+
+functions:
+  app:
+    handler: dist/lambda.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
+      - httpApi:
+          path: /
+          method: ANY
+
+plugins:
+  - serverless-express
+
+custom:
+  serverless-express:
+    binaryMimeTypes:
+      - '*/*'
